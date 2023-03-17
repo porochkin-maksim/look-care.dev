@@ -35,9 +35,10 @@ services:
             - ./_docker/nginx/conf.d:/etc/nginx/conf.d
         ports:
             - "8876:80"
+            - "5173:5173"
         depends_on:
             - app
-            - npm
+            - nodejs
         networks:
             - app-network
 
