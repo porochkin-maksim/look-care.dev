@@ -1,13 +1,19 @@
 version: '3'
 
+# remove all images
+# docker rmi -f $(docker images -aq)
+
+# remove all volumes
+# docker volume rm $(docker volume ls -q)
+
+# docker rm $(docker ps -a -f status=exited -q)
+# docker-compose exec app ls -la /var/www
+# docker exec -it look_care_db bash
+
 #Docker Networks
 networks:
     app-network:
         driver: bridge
-#Volumes
-volumes:
-    db_data:
-        driver: local
 
 services:
 
@@ -35,7 +41,6 @@ services:
             - ./_docker/nginx/conf.d:/etc/nginx/conf.d
         ports:
             - "8876:80"
-            - "5173:5173"
         depends_on:
             - app
             - nodejs
@@ -47,14 +52,16 @@ services:
         image: mysql:8.0
         restart: unless-stopped
         volumes:
-            - db_data:/var/lib/mysql/
+            - ./tmp/db/:/var/lib/mysql/
             - ./_docker/mysql/my.cnf:/etc/mysql/my.cnf
         environment:
             MYSQL_DATABASE: look-care
+            MYSQL_USER: user
+            MYSQL_PASSWORD: user
             MYSQL_ROOT_PASSWORD: root
         ports:
             - "8101:3306"
-        command: mysqld --character-set-server=utf8 --collation-server=utf8_unicode_ci
+        command: mysqld --character-set-server=utf8 --collation-server=utf8_unicode_ci --default-authentication-plugin=mysql_native_password
         networks:
             - app-network
 
@@ -65,5 +72,7 @@ services:
         working_dir: /var/www
         volumes:
             - ./:/var/www
+        ports:
+            - "5173:5173"
         networks:
             - app-network
