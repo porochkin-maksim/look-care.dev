@@ -17,25 +17,18 @@ export default defineConfig({
         hmr: { host: 'localhost', protocol: 'ws' },
     },
     plugins: [
-        vue(),
         laravel({
             input: [
+                'resources/sass/app.scss',
                 'resources/js/app.js',
-                'resources/css/app.css',
             ],
             refresh: true,
         }),
+        vue(),
     ],
-    // server: {
-    //     https: false,
-    //     host: true,
-    //     port: 80,
-    //     strictPort: true,
-    //
-    //     hmr: {
-    //         host: 'localhost',
-    //         protocol: 'ws',
-    //         port: 80
-    //     },
-    // },
+    resolve: {
+        alias: {
+            vue: 'vue/dist/vue.esm-bundler.js',
+        },
+    },
 });
