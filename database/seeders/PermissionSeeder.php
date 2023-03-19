@@ -7,15 +7,13 @@ use Illuminate\Database\Seeder;
 
 class PermissionSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     *
-     * @return void
-     */
-    public function run()
+    public function run(): void
     {
         $data = [
-            ['code' => 'admin', 'name' => 'Администрирование системы',],
+            [
+                Permission::COL_NAME => 'Администрирование системы',
+                Permission::COL_CODE => Permission::ADMIN,
+            ],
         ];
 
         foreach($data as $d){

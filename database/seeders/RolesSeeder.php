@@ -15,7 +15,11 @@ class RolesSeeder extends Seeder
      */
     public function run()
     {
-        $data = ['name' => 'Администратор'];
+        $data = [
+            Role::COL_NAME => 'Администратор',
+            Role::COL_CODE => Role::ADMIN,
+        ];
+
         $role = Role::whereCode(Role::ADMIN)->firstOrNew();
         $role->fill($data)->save();
 
