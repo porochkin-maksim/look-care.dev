@@ -15,6 +15,9 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Permission extends Model implements ModelInterface
 {
+    /** здесь описываются константы разрешений */
+    const ADMIN = 'admin';
+
     const TABLE = 'permissions';
 
     const COL_NAME = 'name';

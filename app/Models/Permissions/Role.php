@@ -15,6 +15,8 @@ use Illuminate\Support\Collection;
  */
 class Role extends Model implements ModelInterface, RoleAndPermissionInterface
 {
+    const ADMIN = 'admin';
+
     const TABLE = 'roles';
 
     const COL_NAME = 'name';
