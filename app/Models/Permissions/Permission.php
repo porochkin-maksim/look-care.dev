@@ -3,15 +3,23 @@
 namespace App\Models\Permissions;
 
 use App\Models\Interfaces\ModelInterface;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * @property string $name
- * @property string $code
- * @property int $sort
- * @method static Permission find($id)
- * @method static Builder|Permission whereCode($value)
+ * App\Models\Permissions\Permission
+ *
+ * @property int $id
+ * @property string $name Название разрешения
+ * @property string $code Уникальный код
+ * @property int|null $sort Порядок для отображения
+ * @method static \Illuminate\Database\Eloquent\Builder|Permission newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Permission newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Permission query()
+ * @method static \Illuminate\Database\Eloquent\Builder|Permission whereCode($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Permission whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Permission whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Permission whereSort($value)
+ * @mixin \Eloquent
  */
 class Permission extends Model implements ModelInterface
 {
