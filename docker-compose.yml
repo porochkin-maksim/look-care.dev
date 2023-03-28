@@ -1,14 +1,13 @@
-version: '3'
-
+# https://habr.com/ru/post/540072/
 # remove all images
 # docker rmi -f $(docker images -aq)
-
 # remove all volumes
 # docker volume rm $(docker volume ls -q)
-
 # docker rm $(docker ps -a -f status=exited -q)
-# docker-compose exec app ls -la /var/www
 # docker exec -it look_care_db bash
+# docker-compose exec app composer install
+
+version: '3'
 
 #Docker Networks
 networks:
@@ -19,7 +18,7 @@ services:
 
     #PHP Service
     app:
-        container_name: look_care_app
+        container_name: ${PROJECT_NAME}_app
         build:
             context: .
             dockerfile: _docker/app/Dockerfile
@@ -27,52 +26,56 @@ services:
         working_dir: /var/www
         volumes:
             - ./:/var/www
-            - ./php/local.ini:/usr/local/etc/php/conf.d/local.ini
+            - ./_docker/app/php/php.ini:/usr/local/etc/php/conf.d/local.ini
+        environment:
+            XDEBUG_CONFIG: client_host=${XDEBUG_REMOTE_HOST} client_port=${XDEBUG_STORM_PORT}
         networks:
             - app-network
 
-    #Nginx Service
+    #Webserver Service
     nginx:
-        container_name: look_care_nginx
+        container_name: ${PROJECT_NAME}_nginx
         image: nginx:latest
         restart: unless-stopped
         volumes:
             - ./:/var/www
             - ./_docker/nginx/conf.d:/etc/nginx/conf.d
         ports:
-            - "8876:80"
+            - ${WEB_LOCAL_PORT}:80
         depends_on:
             - app
             - nodejs
         networks:
             - app-network
 
+    #Database Service
     db:
-        container_name: look_care_db
+        container_name: ${PROJECT_NAME}_db
         image: mysql:8.0
         restart: unless-stopped
         volumes:
             - ./tmp/db/:/var/lib/mysql/
             - ./_docker/mysql/my.cnf:/etc/mysql/my.cnf
         environment:
-            MYSQL_DATABASE: look-care
-            MYSQL_USER: user
-            MYSQL_PASSWORD: user
-            MYSQL_ROOT_PASSWORD: root
+            MYSQL_DATABASE: ${DB_DATABASE}
+            MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+            MYSQL_PASSWORD: ${DB_PASSWORD}
+            MYSQL_USER: ${DB_USERNAME}
         ports:
-            - "8101:3306"
+            - ${DB_LOCAL_PORT}:3306
         command: mysqld --character-set-server=utf8 --collation-server=utf8_unicode_ci --default-authentication-plugin=mysql_native_password
         networks:
             - app-network
 
+    #NPM Service
     nodejs:
         image: node:16
-        container_name: look_care_npm
+        container_name: ${PROJECT_NAME}_npm
         tty: true
         working_dir: /var/www
         volumes:
             - ./:/var/www
         ports:
-            - "5173:5173"
+            - ${NPM_LOCAL_PORT}:${NPM_LOCAL_PORT}
         networks:
             - app-network
